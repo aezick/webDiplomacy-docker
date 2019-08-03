@@ -1,16 +1,9 @@
 #!/bin/bash -eu
+
 set -o pipefail
 SCRIPT_DIR=$(cd $(dirname "$0"); pwd)
 . "$SCRIPT_DIR"/scripts/lib-logging.sh
 trap "handle_error" 0
-
-git submodule foreach git pull origin master
-sh ./variants-fix.sh
-
-function handle_error () {
-   error "$STAGE failed"
-   warnings
-}
 
 STAGE="Initialising"
 
@@ -33,6 +26,13 @@ else
  cp $CONFIG $INSTALLED_CONFIG
 fi
 
+git submodule foreach git pull origin master
+sh ./variants-fix.sh
+
+function handle_error () {
+   error "$STAGE failed"
+   warnings
+}
 
 STAGE="Build"
 log "Building image"
